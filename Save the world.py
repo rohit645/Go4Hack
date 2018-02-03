@@ -100,8 +100,7 @@ def score(count):
     wall_image = pygame.image.load('images/flames.png')
     DISPLAYSURF.blit(wall_image,(display_width-100,0))'''
 def gameloop():
-    crfireballs = create_fireballs()
-    fireballs = list(crfireballs)
+    fireballs = create_fireballs()
     jet = plane()
     x = display_width/2 - jet.width/2
     y = display_height - jet.height
