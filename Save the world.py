@@ -90,27 +90,28 @@ def create_fireballs():
     fireballs = []
     for i in range(4):
         fireballs.append(fireball())
-        fireballs[i].position_y -= i * (display_height / 4)
+        fireballs[i].position_y -= (i+1) * (display_height / 4)
     return fireballs
-
+def score(count):
+    font = pygame.font.Font("freesansbold.ttf",25)
+    text = font.render("Score: " + str(count),True ,WHITE)
+    DISPLAYSURF.blit(text,(0,300))
 '''def firewall():
     wall_image = pygame.image.load('images/flames.png')
     DISPLAYSURF.blit(wall_image,(display_width-100,0))'''
 def gameloop():
-    fireballs = create_fireballs()
+    crfireballs = create_fireballs()
+    fireballs = list(crfireballs)
     jet = plane()
     x = display_width/2 - jet.width/2
     y = display_height - jet.height
     xchange = 0
-    thingstarty = -600
-    thingspeed  = 7
-    thingwidth  = 150
-    thingheight = 150
+    count = 0
     while True:
         DISPLAYSURF.fill(BLACK)
         firewall = flames()
         DISPLAYSURF.blit(firewall.image,firewall.position)
-
+        score(count)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -130,18 +131,21 @@ def gameloop():
         for i in range(4):
             fireballs[i].move()
 
-            if fireballs[i].position_y >= display_width:
+            if fireballs[i].position_y >= display_height:
                 fireballs[i].update_position()
-
+                #score(count)
+                count +=1
             DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
 
         DISPLAYSURF.blit(firewall.image, firewall.position)
         jet.planeRender(x,y)
         if x < 0 or x > display_width - jet.width:
             jet.crash()
-        if thingstarty + thingheight > y :
-                if (x >= thingstartx and x <= thingstartx+thingwidth) or (x + plane_width >= thingstartx and x + plane_width <= thingstartx + thingwidth) :
-                    jet.crash()
+        for i in range(4):
+            if fireballs[i].position_y + fireballs[i].height - 30 > y :
+                    if not (x >= fireballs[i].position_x + fireballs[i].width or x + jet.width <= fireballs[i].position_x -25) :
+                        jet.crash()
+                    #if (x + jet.width >= fireballs[i].position_x + 25 and x + jet.width <= fireballs[i].position_x + fireballs[i].width -  25):
         pygame.display.update()
         clock.tick(60)
 gameloop()
