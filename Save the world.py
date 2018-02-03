@@ -9,12 +9,44 @@ WHITE = (255,255,255)
 
 BGCOLOR = BLACK #Background color
 
+ball_image= pygame.image.load('images/fireball.png')
+
+
+def load_image(name):
+     return pygame.image.load(name)
+
 class flames:
     def __init__(self):
-        self.image = load_image("images/flames.png")
-        self.width, self.height = 100, 600
-        self.position = (display_width - self.width, 0)
+        self.image = load_image("images/flames_for_games_by_naruhanaluvr_without_background.png")
+        self.width, self.height = 1280,200
+        self.position = (0, 0)
 
+class plane:
+    def __init__(self):
+        self.image = pygame.image.load("images/plane1.png")
+        self.width = 114
+        self.height = 123
+    def text_objects(self,text,font):
+        textSurface = font.render(text, True, WHITE)
+        return textSurface, textSurface.get_rect()
+
+    def message_display(self,text):
+        largeText = pygame.font.Font("freesansbold.ttf",115)
+        textSurf,textRect = self.text_objects(text,largeText)
+        textRect.center = ((display_width/2),(display_height/2))
+        DISPLAYSURF.blit(textSurf,textRect)
+
+        pygame.display.update()
+
+        time.sleep(2)
+        gameloop()
+
+    def crash(self) :
+        self.message_display("you crashed")
+
+
+    def planeRender (self,x,y):
+        DISPLAYSURF.blit(self.image,(x,y))
 class fireball:
     global velocity
     velocity = 5
@@ -22,45 +54,81 @@ class fireball:
     def __init__(self):
         self.image = load_image("images/fireball.png")
         self.width, self.height = 104, 100
-        self.position_x = display_width
-        self.position_y = random.randint(0, display_height)
+        self.position_y = -self.height
+        self.position_x = random.randint(0, display_width - self.width)
 
-    def update(self):
-        self.position_x -= velocity
+    def update_position(self):
+        """
+        Updates the position of fireballs from downside of screen to top of screen
+        """
+        self.position_y = -self.height
+        self.position_x = random.randint(0, display_width - self.width)
 
-def load_image(name):
-     return pygame.image.load(name)
+    def move(self):
+        """
+        Moves the fireballs downwards
+        """
+        self.position_y += velocity
 
 def create_fireballs():
+    """
+    Returns a list of 4 fireballs
+    """
     fireballs = []
     for i in range(4):
         fireballs.append(fireball())
-        fireballs[i].position_x += i * (display_width / 4)
+        fireballs[i].position_y -= i * (display_height / 4)
     return fireballs
 
+'''def firewall():
+    wall_image = pygame.image.load('images/flames.png')
+    DISPLAYSURF.blit(wall_image,(display_width-100,0))'''
 def game_loop():
-    game_exit = False
-    firewall = flames()
     fireballs = create_fireballs()
+    jet = plane()
+    x = display_width/2 - jet.width/2
+    y = display_height - jet.height
+    xchange = 0
+    thingstarty = -600
+    thingspeed  = 7
+    thingwidth  = 150
+    thingheight = 150
+    while True:
+        DISPLAYSURF.fill(BLACK)
+        firewall = flames()
+        DISPLAYSURF.blit(firewall.image,firewall.position)
 
-    while not game_exit:
         for event in pygame.event.get():
             if event.type == QUIT:
-                game_exit = True
-                break
+                pygame.quit()
+                quit()
 
-        DISPLAYSURF.fill(BLACK)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT :
+                    xchange = -10
 
+                if event.key == pygame.K_RIGHT:
+                    xchange = 10
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    xchange = 0
+        x = x + xchange
         for i in range(4):
-            fireballs[i].update()
+            fireballs[i].move()
 
-            if fireballs[i].position_x <= -fireballs[i].width:
-                fireballs[i].position_x += display_width
-                fireballs[i].position_y = random.randint(0, display_height)
+            if fireballs[i].position_y >= display_width:
+                fireballs[i].update_position()
 
             DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
 
         DISPLAYSURF.blit(firewall.image, firewall.position)
+        jet.planeRender(x,y)
+        if x < 0 or x > display_width - jet.width:
+            jet.crash()
+        if thingstarty + thingheight > y :
+                if (x >= thingstartx and x <= thingstartx+thingwidth) or (x + plane_width >= thingstartx and x + plane_width <= thingstartx + thingwidth) :
+                    jet.crash()
         pygame.display.update()
         FPSCLOCK.tick(60)
 
