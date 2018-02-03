@@ -23,8 +23,12 @@ WHITE = (255,255,255)
 
 #main game loop
 # anything after the game has started is written inside this loop
+def firewall():
+    wall_image = pygame.image.load('images/flames_for_games_by_naruhanaluvr_without_background.png')
+    DISPLAYSURF.blit(wall_image,(0,0))
 while True:
     DISPLAYSURF.fill(BLACK)
+    firewall()
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
