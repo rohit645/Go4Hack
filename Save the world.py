@@ -38,7 +38,7 @@ def main():
 
 def startScreen():
     titleRect = IMAGESDICT['title'].get_rect()
-    topCoord = 150
+    topCoord = RESOLUTION[1]//2 - titleRect.height
     titleRect.top = topCoord
     titleRect.centerx = RESOLUTION[0]//2
     topCoord+=titleRect.height
@@ -48,10 +48,13 @@ def startScreen():
     
     displayText = BASICFONT.render("Press any key to continue...",True,WHITE,BLACK)
     displayTextPos = displayText.get_rect()
-    displayTextPos.center = (RESOLUTION[0]//2,RESOLUTION[1]//2)
+    displayTextPos.center = (RESOLUTION[0]//2,topCoord)
     DISPLAYSURF.blit(displayText,displayTextPos)
+    
+    # theme music
     pygame.mixer.music.load('sounds/theme.mp3')
     pygame.mixer.music.play(-1,0.0)
+    
     while True: #Main loop for the start screen
         for event in pygame.event.get():
             if event.type == QUIT:
