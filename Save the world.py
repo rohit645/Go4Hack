@@ -39,7 +39,7 @@ class plane:
         pygame.display.update()
 
         time.sleep(2)
-        gameloop()
+        game_loop()
 
     def crash(self) :
         self.message_display("you crashed")
@@ -90,7 +90,7 @@ def game_loop():
     y = display_height - jet.height
     xchange = 0
     thingstarty = -600
-    thingspeed  = 7
+    thingspeed  = 17
     thingwidth  = 150
     thingheight = 150
     while True:
