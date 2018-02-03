@@ -22,11 +22,11 @@ WHITE = (255,255,255)
 
 
 #main game loop
-# anything after the game has started is written inside this loop 
+# anything after the game has started is written inside this loop
 while True:
     DISPLAYSURF.fill(BLACK)
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
-            sys.quit()
+            quit()
     pygame.display.update()
