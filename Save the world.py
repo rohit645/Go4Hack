@@ -3,9 +3,12 @@ from pygame.locals import *
 
 display_height, display_width = 600, 1000
 RESOLUTION = (display_width, display_height)
+
 BLACK = (0, 0, 0)
 WHITE = (255,255,255)
+
 BGCOLOR = BLACK #Background color
+
 class flames:
     def __init__(self):
         self.image = load_image("images/flames.png")
@@ -60,7 +63,6 @@ def game_loop():
         DISPLAYSURF.blit(firewall.image, firewall.position)
         pygame.display.update()
         FPSCLOCK.tick(60)
-
 
 
 # main game loop
