@@ -21,6 +21,7 @@ class flames:
         self.position = (0, 0)
 
 class plane:
+    global HEALTH
     def __init__(self):
         self.image = pygame.image.load("images/plane1.png")
         self.width = 114
@@ -38,9 +39,14 @@ class plane:
         pygame.display.update()
 
         time.sleep(2)
+        if HEALTH <= 0:
+            main()
         game_loop()
 
     def crash(self) :
+        global HEALTH
+        HEALTH -= 1
+
         self.message_display("you crashed")
 
 
@@ -87,18 +93,22 @@ def score(count):
     wall_image = pygame.image.load('images/flames.png')
     DISPLAYSURF.blit(wall_image,(display_width-100,0))'''
 def game_loop():
+    global HEALTH,count
+    Healthimg = pygame.image.load("images/healthimg.png")
     FIREBALLSCOUNT = 4
     fireballs = create_fireballs(FIREBALLSCOUNT)
     jet = plane()
     x = display_width/2 - jet.width/2
     y = display_height - jet.height
     xchange = 0
-    count = 0
+
     while True:
         DISPLAYSURF.fill(BLACK)
         firewall = flames()
         DISPLAYSURF.blit(firewall.image,firewall.position)
         score(count)
+        for i in range(HEALTH):
+            DISPLAYSURF.blit(Healthimg,((i*45),(display_height-80)))
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -128,9 +138,10 @@ def game_loop():
         jet.planeRender(x,y)
         if x < 0 or x > display_width - jet.width:
             jet.crash()
+
         for i in range(4):
             if fireballs[i].position_y + fireballs[i].height - 30 > y :
-                    if not (x >= fireballs[i].position_x + fireballs[i].width -25 or x + jet.width <= fireballs[i].position_x -25) :
+                    if not (x >= fireballs[i].position_x + fireballs[i].width -25 or x + jet.width <= fireballs[i].position_x + 25) :
                         jet.crash()
                     #if (x + jet.width >= fireballs[i].position_x + 25 and x + jet.width <= fireballs[i].position_x + fireballs[i].width -  25):
         pygame.display.update()
@@ -140,12 +151,13 @@ def game_loop():
 # main game loop
 # anything after the game has started is written inside this loop
 def main():
-    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT, FPS
+    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT, FPS,HEALTH,count
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     FPS = 60
-
+    HEALTH = 3
+    count = 0
     DISPLAYSURF = pygame.display.set_mode(RESOLUTION)
 
     pygame.display.set_caption("Save The World!")
