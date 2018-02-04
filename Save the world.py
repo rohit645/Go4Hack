@@ -11,7 +11,7 @@ LIMEGREEN = (50,205,50)
 
 
 BGCOLOR = BLACK #Background color
-
+HIGHSCORE = 0
 ball_image= pygame.image.load('images/fireball.png')
 
 
@@ -60,7 +60,7 @@ class plane:
 
             time.sleep(2)
             main()
-        time.sleep(2)    
+        time.sleep(2)
         game_loop()
 
     def crash(self) :
@@ -117,18 +117,22 @@ def create_fireballs(count,velocity):
 
     return fireballs
 def score(count):
-    font = pygame.font.Font("freesansbold.ttf",25)
+    font = pygame.font.Font("freesansbold.ttf",40)
     text = font.render("Score: " + str(count),True ,WHITE)
     DISPLAYSURF.blit(text,(0,0))
 def LEVEL(game_level):
-    font = pygame.font.Font("freesansbold.ttf",25)
+    font = pygame.font.Font("freesansbold.ttf",40)
     text = font.render("Level: " + str(game_level),True ,WHITE)
     DISPLAYSURF.blit(text,(400,0))
+def highscore(HIGHSCORE):
+    font = pygame.font.Font("freesansbold.ttf",40)
+    text = font.render("Highscore: " + str(HIGHSCORE),True ,WHITE)
+    DISPLAYSURF.blit(text,(700,0))
 '''def firewall():
     wall_image = pygame.image.load('images/flames.png')
     DISPLAYSURF.blit(wall_image,(display_width-100,0))'''
 def game_loop():
-    global HEALTH,count
+    global HEALTH,count ,HIGHSCORE
     Healthimg = pygame.image.load("images/healthimg.png")
     FIREBALLSCOUNT = 4
     FIREBALLVELOCITY = 5
@@ -146,6 +150,7 @@ def game_loop():
         #DISPLAYSURF.blit(firewall.image,firewall.position)
         firewall.display()
         score(count)
+        highscore(HIGHSCORE)
         for i in range(HEALTH):
             DISPLAYSURF.blit(Healthimg,(200 + (i*45),(0)))
         #LEVEL(game_level)
@@ -179,14 +184,28 @@ def game_loop():
                 #fireball_near = (fireball_near + 1) % 4
                 #score(count)
                 count +=1
-                if count % 20 == 0:
+                #score(count)
+                if count > HIGHSCORE:
+                    HIGHSCORE = count
+                if (count-1) % 20 == 0 and count != 1:
                     game_level += 1
+
+                    largeText = pygame.font.Font("freesansbold.ttf",100)
+                    textSurf,textRect = jet.text_objects("Level: "+ str(game_level),largeText)
+                    textRect.center = ((display_width/2),(display_height/2 ))
+                    DISPLAYSURF.blit(textSurf,textRect)
+                    #score(count)
+                    #highscore(HIGHSCORE)
+                    pygame.display.update()
+
                     levelSound = pygame.mixer.Sound('sounds/healthup.wav')
                     levelSound.play()
+                    time.sleep(2)
+
                     for i in range(4):
                         fireballs[i].change_speed()
                 #score(count)
-                #count +=1
+
             # Only display below score and health bar
             if fireballs[i].position_y > 40:
                 DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
@@ -210,7 +229,7 @@ def game_loop():
 # main game loop
 # anything after the game has started is written inside this loop
 def main():
-    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT, FPS, HEALTH,count
+    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT, FPS, HEALTH,count,HIGHSCORE
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
@@ -250,7 +269,7 @@ def startScreen():
         displayTextPos[i].center = (RESOLUTION[0]//2,topCoord)
         topCoord+=displayTextPos[i].height
 #    DISPLAYSURF.blit(IMAGESDICT['title'],titleRect)
-    
+
     # theme music
     pygame.mixer.music.load('sounds/theme.mp3')
     pygame.mixer.music.play(-1,0.0)
@@ -267,12 +286,12 @@ def startScreen():
                 fireballs[i].update_position()
 
             DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
-        
+
         DISPLAYSURF.blit(titleText,titleRect)
-        
+
         for i in range(len(displayText)):
             DISPLAYSURF.blit(displayText[i],displayTextPos[i])
-            
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
@@ -281,7 +300,7 @@ def startScreen():
                     terminate()
                 pygame.mixer.music.stop()
                 return
-        
+
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
