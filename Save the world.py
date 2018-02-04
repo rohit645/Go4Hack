@@ -1,34 +1,25 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Feb  3 11:29:38 2018
-
-@author: rohit
-"""
-
-import pygame,time,random,sys
+import pygame, time, random, sys
 from pygame.locals import *
 
-pygame.init()
-display_width,display_height = 1280,720
-RESOLUTION = (display_width,display_height)
-DISPLAYSURF = pygame.display.set_mode(RESOLUTION)
-pygame.display.set_caption("Save The World!")
-clock = pygame.time.Clock()
-# define colors
-BLACK = (0,0,0)
+display_height, display_width = 600, 1000
+RESOLUTION = (display_width, display_height)
+BLACK = (0, 0, 0)
 WHITE = (255,255,255)
 
+<<<<<<< HEAD
 #add menu screen
 BGCOLOR = BLACK #Background color
 
+=======
+BGCOLOR = BLACK #Background color
+>>>>>>> 131a25c08e77bef09d0301b2d84a08281a649f0e
 
-#main game loop
-# anything after the game has started is written inside this loop
 ball_image= pygame.image.load('images/fireball.png')
 
 
 def load_image(name):
      return pygame.image.load(name)
+
 class flames:
     def __init__(self):
         self.image = load_image("images/flames_for_games_by_naruhanaluvr_without_background.png")
@@ -53,7 +44,7 @@ class plane:
         pygame.display.update()
 
         time.sleep(2)
-        gameloop()
+        game_loop()
 
     def crash(self) :
         self.message_display("you crashed")
@@ -84,14 +75,15 @@ class fireball:
         """
         self.position_y += velocity
 
-def create_fireballs():
+def create_fireballs(count):
     """
     Returns a list of 4 fireballs
     """
     fireballs = []
-    for i in range(4):
+    for i in range(count):
         fireballs.append(fireball())
-        fireballs[i].position_y -= (i+1) * (display_height / 4)
+        fireballs[i].position_y -= (i+1) * (display_height / count)
+
     return fireballs
 def score(count):
     font = pygame.font.Font("freesansbold.ttf",25)
@@ -100,8 +92,9 @@ def score(count):
 '''def firewall():
     wall_image = pygame.image.load('images/flames.png')
     DISPLAYSURF.blit(wall_image,(display_width-100,0))'''
-def gameloop():
-    fireballs = create_fireballs()
+def game_loop():
+    FIREBALLSCOUNT = 4
+    fireballs = create_fireballs(FIREBALLSCOUNT)
     jet = plane()
     x = display_width/2 - jet.width/2
     y = display_height - jet.height
@@ -128,7 +121,7 @@ def gameloop():
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     xchange = 0
         x = x + xchange
-        for i in range(4):
+        for i in range(FIREBALLSCOUNT):
             fireballs[i].move()
 
             if fireballs[i].position_y >= display_height:
@@ -147,11 +140,17 @@ def gameloop():
                         jet.crash()
                     #if (x + jet.width >= fireballs[i].position_x + 25 and x + jet.width <= fireballs[i].position_x + fireballs[i].width -  25):
         pygame.display.update()
+<<<<<<< HEAD
         clock.tick(60)
+=======
+        FPSCLOCK.tick(FPS)
+
+>>>>>>> 131a25c08e77bef09d0301b2d84a08281a649f0e
 
 # main game loop
 # anything after the game has started is written inside this loop
 def main():
+<<<<<<< HEAD
     global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT
 
     pygame.init()
@@ -195,6 +194,60 @@ def startScreen():
     pygame.mixer.music.play(-1,0.0)
 
     while True: #Main loop for the start screen
+=======
+    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT, FPS
+    
+    pygame.init()
+    FPSCLOCK = pygame.time.Clock()
+    FPS = 60
+    
+    DISPLAYSURF = pygame.display.set_mode(RESOLUTION)
+    
+    pygame.display.set_caption("Save The World!")
+    BASICFONT = pygame.font.Font("freesansbold.ttf",22)
+    
+    IMAGESDICT = {'title':pygame.image.load('images/title_image.png')}
+    
+    startScreen()
+    game_loop()
+    terminate()
+
+def startScreen():
+    FIREBALLSCOUNT = 7 # number of fireballs displayed on start screen
+    
+    fontObj = pygame.font.Font("freesansbold.ttf",60)
+    titleText = fontObj.render("Save the World",True,WHITE)
+    titleRect = titleText.get_rect()
+#    titleRect = IMAGESDICT['title'].get_rect()
+    topCoord = RESOLUTION[1]//2 - titleRect.height
+    titleRect.top = topCoord
+    titleRect.centerx = RESOLUTION[0]//2
+    topCoord+=titleRect.height + 20
+    
+    displayText = BASICFONT.render("Press any key to continue...",True,WHITE)
+    displayTextPos = displayText.get_rect()
+    displayTextPos.center = (RESOLUTION[0]//2,topCoord)
+#    DISPLAYSURF.blit(IMAGESDICT['title'],titleRect)
+
+    pygame.mixer.music.load('sounds/theme.mp3')
+    pygame.mixer.music.play(-1,0.0)
+
+    fireballs = create_fireballs(FIREBALLSCOUNT)
+    while True: #Main loop for the start screen
+
+        DISPLAYSURF.fill(BGCOLOR)
+    
+    # theme music
+        for i in range(FIREBALLSCOUNT):
+            fireballs[i].move()
+        
+            if fireballs[i].position_y >= display_height:
+                fireballs[i].update_position()
+        
+            DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
+        DISPLAYSURF.blit(titleText,titleRect)
+        DISPLAYSURF.blit(displayText,displayTextPos)
+>>>>>>> 131a25c08e77bef09d0301b2d84a08281a649f0e
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
@@ -204,11 +257,20 @@ def startScreen():
                 pygame.mixer.music.stop()
                 return
         pygame.display.update()
+<<<<<<< HEAD
         FPSCLOCK.tick()
 
 def terminate():
     pygame.quit()
     sys.exit()
 
+=======
+        FPSCLOCK.tick(FPS) # for slow effect
+        
+def terminate():
+    pygame.quit()
+    sys.exit()
+    
+>>>>>>> 131a25c08e77bef09d0301b2d84a08281a649f0e
 if __name__ == '__main__':
     main()
