@@ -18,7 +18,7 @@ class flames:
     def __init__(self):
         self.image = load_image("images/flames_for_games_by_naruhanaluvr_without_background.png")
         self.width, self.height = 1280,200
-        self.position = (0, 0)
+        self.position = (0, 40)
 
 class plane:
     global HEALTH
@@ -39,6 +39,8 @@ class plane:
         pygame.display.update()
 
         time.sleep(2)
+        pygame.display.update()
+        # game starts again after health is 0
         if HEALTH <= 0:
             main()
         game_loop()
@@ -46,6 +48,9 @@ class plane:
     def crash(self) :
         global HEALTH
         HEALTH -= 1
+
+        if HEALTH <= 0:
+            self.message_display("GAME OVER")
 
         self.message_display("you crashed")
 
@@ -88,7 +93,7 @@ def create_fireballs(count):
 def score(count):
     font = pygame.font.Font("freesansbold.ttf",25)
     text = font.render("Score: " + str(count),True ,WHITE)
-    DISPLAYSURF.blit(text,(0,300))
+    DISPLAYSURF.blit(text,(0,0))
 '''def firewall():
     wall_image = pygame.image.load('images/flames.png')
     DISPLAYSURF.blit(wall_image,(display_width-100,0))'''
@@ -99,7 +104,7 @@ def game_loop():
     fireballs = create_fireballs(FIREBALLSCOUNT)
     jet = plane()
     x = display_width/2 - jet.width/2
-    y = display_height - jet.height
+    y = display_height - jet.height -50
     xchange = 0
 
     while True:
@@ -108,7 +113,7 @@ def game_loop():
         DISPLAYSURF.blit(firewall.image,firewall.position)
         score(count)
         for i in range(HEALTH):
-            DISPLAYSURF.blit(Healthimg,((i*45),(display_height-80)))
+            DISPLAYSURF.blit(Healthimg,(200 + (i*45),(0)))
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -132,7 +137,9 @@ def game_loop():
                 fireballs[i].update_position()
                 #score(count)
                 count +=1
-            DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
+            # Only display below score and health bar
+            if fireballs[i].position_y > 40:
+                DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
 
         DISPLAYSURF.blit(firewall.image, firewall.position)
         jet.planeRender(x,y)
