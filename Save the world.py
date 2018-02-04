@@ -54,7 +54,8 @@ class plane:
     def crash(self) :
         global HEALTH
         HEALTH -= 1
-
+        crashSound = pygame.mixer.Sound('sounds/explodedeath.wav')
+        crashSound.play()
         if HEALTH <= 0:
             self.message_display("GAME OVER")
 
@@ -65,12 +66,12 @@ class plane:
         DISPLAYSURF.blit(self.image,(x,y))
 
 class fireball:
-    def __init__(self):
+    def __init__(self,velocity):
         self.image = load_image("images/meteor.png")
         self.width, self.height = 35, 45
         self.position_y = -self.height
         self.position_x = random.randint(50, display_width - self.width - 50)
-        self.velocity = 10
+        self.velocity = velocity
         self.add = 3
 
     def update_position(self):
@@ -92,13 +93,13 @@ class fireball:
     def change_speed(self):
         self.velocity += self.add
 
-def create_fireballs(count):
+def create_fireballs(count,velocity):
     """
     Returns a list of 4 fireballs
     """
     fireballs = []
     for i in range(count):
-        fireballs.append(fireball())
+        fireballs.append(fireball(velocity))
         fireballs[i].position_y -= (i+1) * (display_height / count)
 
     return fireballs
@@ -117,12 +118,16 @@ def game_loop():
     global HEALTH,count
     Healthimg = pygame.image.load("images/healthimg.png")
     FIREBALLSCOUNT = 4
-    fireballs = create_fireballs(FIREBALLSCOUNT)
+    FIREBALLVELOCITY = 5
+    fireballs = create_fireballs(FIREBALLSCOUNT,FIREBALLVELOCITY)
     jet = plane()
     x = display_width/2 - jet.width/2
     y = display_height - jet.height -50
     xchange = 0
     game_level = 1
+    count = 0
+    pygame.mixer.music.load('sounds/game.mp3')
+    pygame.mixer.music.play(-1,0.0)
     while True:
         DISPLAYSURF.fill(BLACK)
         firewall = flames()
@@ -138,11 +143,15 @@ def game_loop():
                 quit()
 
             if event.type == pygame.KEYDOWN:
+                if event.key == K_SPACE:
+                    pauseGame()
                 if event.key == pygame.K_LEFT :
                     xchange = -10
 
                 if event.key == pygame.K_RIGHT:
                     xchange = 10
+                if event.key == K_ESCAPE:
+                    terminate()
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -152,6 +161,8 @@ def game_loop():
             fireballs[i].move()
 
             if fireballs[i].position_y >= display_height:
+                vanishSound = pygame.mixer.Sound('sounds/missile.wav')
+                vanishSound.play()
                 fireballs[i].update_position()
                 #fireball_near = (fireball_near + 1) % 4
                 #score(count)
@@ -168,12 +179,14 @@ def game_loop():
         LEVEL(game_level)
         firewall.display()
         jet.planeRender(x,y)
-        if x < 50 or x > display_width - jet.width - 50:
+        if x < 50 or x > display_width - jet.width -50:
+            pygame.mixer.music.stop()
             jet.crash()
 
         for i in range(4):
             if fireballs[i].position_y + fireballs[i].height > y and fireballs[i].position_y < y + jet.height :
                     if not (x >= fireballs[i].position_x + fireballs[i].width  or x + jet.width <= fireballs[i].position_x ) :
+                        pygame.mixer.music.stop()
                         jet.crash()
                     #if (x + jet.width >= fireballs[i].position_x + 25 and x + jet.width <= fireballs[i].position_x + fireballs[i].width -  25):
         pygame.display.update()
@@ -218,10 +231,11 @@ def startScreen():
     displayTextPos.center = (RESOLUTION[0]//2,topCoord)
 #    DISPLAYSURF.blit(IMAGESDICT['title'],titleRect)
 
+    # theme music
     pygame.mixer.music.load('sounds/theme.mp3')
     pygame.mixer.music.play(-1,0.0)
 
-    fireballs = create_fireballs(FIREBALLSCOUNT)
+    fireballs = create_fireballs(FIREBALLSCOUNT,2)
     while True: #Main loop for the start screen
 
         DISPLAYSURF.fill(BGCOLOR)
@@ -246,6 +260,26 @@ def startScreen():
                 return
         pygame.display.update()
         FPSCLOCK.tick(FPS) # for slow effect
+
+def pauseGame():
+    LARGEFONT = pygame.font.Font("freesansbold.ttf",120)
+    pauseText = LARGEFONT.render("PAUSED",True,WHITE)
+
+    textRect  = pauseText.get_rect()
+    textRect.center = (RESOLUTION[0]//2,RESOLUTION[1]//2)
+
+    DISPLAYSURF.blit(pauseText,textRect)
+    pygame.display.update()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    terminate()
+                elif event.key == K_SPACE:
+                    return
 
 def terminate():
     pygame.quit()
