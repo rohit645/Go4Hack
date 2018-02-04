@@ -48,7 +48,7 @@ class plane:
         DISPLAYSURF.blit(self.image,(x,y))
 class fireball:
     global velocity
-    velocity = 2
+    velocity = 5
 
     def __init__(self):
         self.image = load_image("images/fireball.png")
