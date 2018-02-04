@@ -5,6 +5,10 @@ display_height, display_width = 600, 1000
 RESOLUTION = (display_width, display_height)
 BLACK = (0, 0, 0)
 WHITE = (255,255,255)
+LAWNGREEN = (124,252,0)
+CHARTREUSE = (127,255,0)
+LIMEGREEN = (50,205,50)
+
 
 BGCOLOR = BLACK #Background color
 
@@ -134,10 +138,6 @@ def game_loop():
     y = display_height - jet.height -50
     xchange = 0
     game_level = 1
-<<<<<<< HEAD
-    #count = 0
-=======
->>>>>>> 46f4236cb43000179d9b9946ef7ae3b87347532a
     pygame.mixer.music.load('sounds/game.mp3')
     pygame.mixer.music.play(-1,0.0)
     while True:
@@ -229,13 +229,15 @@ def main():
     terminate()
 
 def startScreen():
+    bgimage = pygame.image.load('images/bgi.jpg')
+    bgimage = pygame.transform.scale(bgimage,RESOLUTION)
     FIREBALLSCOUNT = 7 # number of fireballs displayed on start screen
     INSTRUCTIONS  = ["Press ESC to quit at any time","Press SPACE to pause","Press any other key to continue...","Tip : Dodge the meteors to increase score"]
-    fontObj = pygame.font.Font("freesansbold.ttf",60)
-    titleText = fontObj.render("Save the World",True,(51,105,232))
+    fontObj = pygame.font.Font("freesansbold.ttf",80)
+    titleText = fontObj.render("Save the World",True,(219, 50, 54))
     titleRect = titleText.get_rect()
 #    titleRect = IMAGESDICT['title'].get_rect()
-    topCoord = RESOLUTION[1]//2 - titleRect.height
+    topCoord = RESOLUTION[1]//2 - titleRect.height-50
     titleRect.top = topCoord
     titleRect.centerx = RESOLUTION[0]//2
     topCoord+=titleRect.height + 20
@@ -243,7 +245,7 @@ def startScreen():
     displayTextPos = []
     for i in range(len(INSTRUCTIONS)):
 
-        displayText.append(BASICFONT.render(INSTRUCTIONS[i],True,WHITE))
+        displayText.append(BASICFONT.render(INSTRUCTIONS[i],True,BLACK))
         displayTextPos.append(displayText[i].get_rect())
         displayTextPos[i].center = (RESOLUTION[0]//2,topCoord)
         topCoord+=displayTextPos[i].height
@@ -256,6 +258,7 @@ def startScreen():
     fireballs = create_fireballs(FIREBALLSCOUNT,2)
     while True: #Main loop for the start screen
         DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.blit(bgimage,bgimage.get_rect())
 
         for i in range(FIREBALLSCOUNT):
             fireballs[i].move()
