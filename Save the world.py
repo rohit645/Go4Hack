@@ -3,7 +3,6 @@ from pygame.locals import *
 
 display_height, display_width = 600, 1000
 RESOLUTION = (display_width, display_height)
-
 BLACK = (0, 0, 0)
 WHITE = (255,255,255)
 
@@ -49,7 +48,7 @@ class plane:
         DISPLAYSURF.blit(self.image,(x,y))
 class fireball:
     global velocity
-    velocity = 5
+    velocity = 2
 
     def __init__(self):
         self.image = load_image("images/fireball.png")
@@ -70,21 +69,22 @@ class fireball:
         """
         self.position_y += velocity
 
-def create_fireballs():
+def create_fireballs(count):
     """
     Returns a list of 4 fireballs
     """
     fireballs = []
-    for i in range(4):
+    for i in range(count):
         fireballs.append(fireball())
-        fireballs[i].position_y -= i * (display_height / 4)
+        fireballs[i].position_y -= i * (display_height / count)
     return fireballs
 
 '''def firewall():
     wall_image = pygame.image.load('images/flames.png')
     DISPLAYSURF.blit(wall_image,(display_width-100,0))'''
 def game_loop():
-    fireballs = create_fireballs()
+    FIREBALLSCOUNT = 4
+    fireballs = create_fireballs(FIREBALLSCOUNT)
     jet = plane()
     x = display_width/2 - jet.width/2
     y = display_height - jet.height
@@ -114,7 +114,7 @@ def game_loop():
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     xchange = 0
         x = x + xchange
-        for i in range(4):
+        for i in range(FIREBALLSCOUNT):
             fireballs[i].move()
 
             if fireballs[i].position_y >= display_width:
@@ -130,16 +130,17 @@ def game_loop():
                 if (x >= thingstartx and x <= thingstartx+thingwidth) or (x + plane_width >= thingstartx and x + plane_width <= thingstartx + thingwidth) :
                     jet.crash()
         pygame.display.update()
-        FPSCLOCK.tick(60)
+        FPSCLOCK.tick(FPS)
 
 
 # main game loop
 # anything after the game has started is written inside this loop
 def main():
-    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT
+    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT, FPS
     
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
+    FPS = 60
     
     DISPLAYSURF = pygame.display.set_mode(RESOLUTION)
     
@@ -151,34 +152,42 @@ def main():
     startScreen()
     game_loop()
     terminate()
-    
-    while True:
-        DISPLAYSURF.fill(BLACK)
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                terminate()
-        pygame.display.update()
 
 def startScreen():
-    titleRect = IMAGESDICT['title'].get_rect()
+    FIREBALLSCOUNT = 7 # number of fireballs displayed on start screen
+    
+    fontObj = pygame.font.Font("freesansbold.ttf",60)
+    titleText = fontObj.render("Save the World",True,WHITE)
+    titleRect = titleText.get_rect()
+#    titleRect = IMAGESDICT['title'].get_rect()
     topCoord = RESOLUTION[1]//2 - titleRect.height
     titleRect.top = topCoord
     titleRect.centerx = RESOLUTION[0]//2
-    topCoord+=titleRect.height
-   
-    DISPLAYSURF.fill(BGCOLOR)
-    DISPLAYSURF.blit(IMAGESDICT['title'],titleRect)
+    topCoord+=titleRect.height + 20
     
-    displayText = BASICFONT.render("Press any key to continue...",True,WHITE,BLACK)
+    displayText = BASICFONT.render("Press any key to continue...",True,WHITE)
     displayTextPos = displayText.get_rect()
     displayTextPos.center = (RESOLUTION[0]//2,topCoord)
-    DISPLAYSURF.blit(displayText,displayTextPos)
-    
-    # theme music
+#    DISPLAYSURF.blit(IMAGESDICT['title'],titleRect)
+
     pygame.mixer.music.load('sounds/theme.mp3')
     pygame.mixer.music.play(-1,0.0)
-    
+
+    fireballs = create_fireballs(FIREBALLSCOUNT)
     while True: #Main loop for the start screen
+
+        DISPLAYSURF.fill(BGCOLOR)
+    
+    # theme music
+        for i in range(FIREBALLSCOUNT):
+            fireballs[i].move()
+        
+            if fireballs[i].position_y >= display_height:
+                fireballs[i].update_position()
+        
+            DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
+        DISPLAYSURF.blit(titleText,titleRect)
+        DISPLAYSURF.blit(displayText,displayTextPos)
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
@@ -188,7 +197,7 @@ def startScreen():
                 pygame.mixer.music.stop()
                 return
         pygame.display.update()
-        FPSCLOCK.tick()
+        FPSCLOCK.tick(FPS) # for slow effect
         
 def terminate():
     pygame.quit()
