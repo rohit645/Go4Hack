@@ -125,7 +125,6 @@ def game_loop():
     y = display_height - jet.height -50
     xchange = 0
     game_level = 1
-    count = 0
     pygame.mixer.music.load('sounds/game.mp3')
     pygame.mixer.music.play(-1,0.0)
     while True:
@@ -161,14 +160,16 @@ def game_loop():
             fireballs[i].move()
 
             if fireballs[i].position_y >= display_height:
-                vanishSound = pygame.mixer.Sound('sounds/missile.wav')
-                vanishSound.play()
+                #vanishSound = pygame.mixer.Sound('sounds/missile.wav')
+                #vanishSound.play()
                 fireballs[i].update_position()
                 #fireball_near = (fireball_near + 1) % 4
                 #score(count)
                 count +=1
                 if count % 20 == 0:
                     game_level += 1
+                    levelSound = pygame.mixer.Sound('sounds/healthup.wav')
+                    levelSound.play()
                     for i in range(4):
                         fireballs[i].change_speed()
                 #score(count)
@@ -196,7 +197,7 @@ def game_loop():
 # main game loop
 # anything after the game has started is written inside this loop
 def main():
-    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT, FPS,HEALTH,count
+    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT, FPS, HEALTH,count
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
@@ -216,7 +217,7 @@ def main():
 
 def startScreen():
     FIREBALLSCOUNT = 7 # number of fireballs displayed on start screen
-
+    INSTRUCTIONS  = ["Press ESC to quit at any time","Press SPACE to pause","Press any other key to continue...","Tip : Dodge the meteors to increase score"]
     fontObj = pygame.font.Font("freesansbold.ttf",60)
     titleText = fontObj.render("Save the World",True,WHITE)
     titleRect = titleText.get_rect()
@@ -225,22 +226,24 @@ def startScreen():
     titleRect.top = topCoord
     titleRect.centerx = RESOLUTION[0]//2
     topCoord+=titleRect.height + 20
+    displayText = []
+    displayTextPos = []
+    for i in range(len(INSTRUCTIONS)):
 
-    displayText = BASICFONT.render("Press any key to continue...",True,WHITE)
-    displayTextPos = displayText.get_rect()
-    displayTextPos.center = (RESOLUTION[0]//2,topCoord)
+        displayText.append(BASICFONT.render(INSTRUCTIONS[i],True,WHITE))
+        displayTextPos.append(displayText[i].get_rect())
+        displayTextPos[i].center = (RESOLUTION[0]//2,topCoord)
+        topCoord+=displayTextPos[i].height
 #    DISPLAYSURF.blit(IMAGESDICT['title'],titleRect)
-
+    
     # theme music
     pygame.mixer.music.load('sounds/theme.mp3')
     pygame.mixer.music.play(-1,0.0)
 
     fireballs = create_fireballs(FIREBALLSCOUNT,2)
     while True: #Main loop for the start screen
-
         DISPLAYSURF.fill(BGCOLOR)
 
-    # theme music
         for i in range(FIREBALLSCOUNT):
             fireballs[i].move()
 
@@ -248,8 +251,12 @@ def startScreen():
                 fireballs[i].update_position()
 
             DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
+        
         DISPLAYSURF.blit(titleText,titleRect)
-        DISPLAYSURF.blit(displayText,displayTextPos)
+        
+        for i in range(len(displayText)):
+            DISPLAYSURF.blit(displayText[i],displayTextPos[i])
+            
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
@@ -258,11 +265,12 @@ def startScreen():
                     terminate()
                 pygame.mixer.music.stop()
                 return
+        
         pygame.display.update()
-        FPSCLOCK.tick(FPS) # for slow effect
+        FPSCLOCK.tick(FPS)
 
 def pauseGame():
-    LARGEFONT = pygame.font.Font("freesansbold.ttf",120)
+    LARGEFONT = pygame.font.Font("freesansbold.ttf",100)
     pauseText = LARGEFONT.render("PAUSED",True,WHITE)
 
     textRect  = pauseText.get_rect()
