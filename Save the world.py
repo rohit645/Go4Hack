@@ -27,7 +27,7 @@ class flames:
         DISPLAYSURF.blit(self.image2, self.position2)
 
 class plane:
-    global HEALTH
+    global HEALTH ,count
     def __init__(self):
         self.image = pygame.image.load("images/ship.png")
         self.width = 70
@@ -41,14 +41,22 @@ class plane:
         textSurf,textRect = self.text_objects(text,largeText)
         textRect.center = ((display_width/2),(display_height/2))
         DISPLAYSURF.blit(textSurf,textRect)
+        #if text=="GAME OVER":
 
         pygame.display.update()
 
-        time.sleep(2)
-        pygame.display.update()
+
+
         # game starts again after health is 0
         if HEALTH <= 0:
+            textSurf,textRect = self.text_objects("Score: "+ str(count),largeText)
+            textRect.center = ((display_width/2),(display_height/2 + textRect.height))
+            DISPLAYSURF.blit(textSurf,textRect)
+            pygame.display.update()
+
+            time.sleep(2)
             main()
+        time.sleep(2)    
         game_loop()
 
     def crash(self) :
@@ -58,6 +66,7 @@ class plane:
         crashSound.play()
         if HEALTH <= 0:
             self.message_display("GAME OVER")
+
 
         self.message_display("YOU CRASHED!")
 
@@ -125,6 +134,10 @@ def game_loop():
     y = display_height - jet.height -50
     xchange = 0
     game_level = 1
+<<<<<<< HEAD
+    #count = 0
+=======
+>>>>>>> 46f4236cb43000179d9b9946ef7ae3b87347532a
     pygame.mixer.music.load('sounds/game.mp3')
     pygame.mixer.music.play(-1,0.0)
     while True:
