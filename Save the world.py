@@ -6,13 +6,7 @@ RESOLUTION = (display_width, display_height)
 BLACK = (0, 0, 0)
 WHITE = (255,255,255)
 
-<<<<<<< HEAD
-#add menu screen
 BGCOLOR = BLACK #Background color
-
-=======
-BGCOLOR = BLACK #Background color
->>>>>>> 131a25c08e77bef09d0301b2d84a08281a649f0e
 
 ball_image= pygame.image.load('images/fireball.png')
 
@@ -140,81 +134,32 @@ def game_loop():
                         jet.crash()
                     #if (x + jet.width >= fireballs[i].position_x + 25 and x + jet.width <= fireballs[i].position_x + fireballs[i].width -  25):
         pygame.display.update()
-<<<<<<< HEAD
-        clock.tick(60)
-=======
         FPSCLOCK.tick(FPS)
 
->>>>>>> 131a25c08e77bef09d0301b2d84a08281a649f0e
 
 # main game loop
 # anything after the game has started is written inside this loop
 def main():
-<<<<<<< HEAD
-    global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT
-
-    pygame.init()
-    FPSCLOCK = pygame.time.Clock()
-
-    DISPLAYSURF = pygame.display.set_mode(RESOLUTION)
-
-    pygame.display.set_caption("Save The World!")
-    BASICFONT = pygame.font.Font("freesansbold.ttf",22)
-
-    IMAGESDICT = {'title':pygame.image.load('images/title_image.png')}
-
-    startScreen()
-    gameloop()
-    terminate()
-
-    while True:
-        DISPLAYSURF.fill(BLACK)
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                terminate()
-        pygame.display.update()
-
-def startScreen():
-    titleRect = IMAGESDICT['title'].get_rect()
-    topCoord = RESOLUTION[1]//2 - titleRect.height
-    titleRect.top = topCoord
-    titleRect.centerx = RESOLUTION[0]//2
-    topCoord+=titleRect.height
-
-    DISPLAYSURF.fill(BGCOLOR)
-    DISPLAYSURF.blit(IMAGESDICT['title'],titleRect)
-
-    displayText = BASICFONT.render("Press any key to continue...",True,WHITE,BLACK)
-    displayTextPos = displayText.get_rect()
-    displayTextPos.center = (RESOLUTION[0]//2,topCoord)
-    DISPLAYSURF.blit(displayText,displayTextPos)
-
-    # theme music
-    pygame.mixer.music.load('sounds/theme.mp3')
-    pygame.mixer.music.play(-1,0.0)
-
-    while True: #Main loop for the start screen
-=======
     global DISPLAYSURF, FPSCLOCK, IMAGESDICT, BASICFONT, FPS
-    
+
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     FPS = 60
-    
+
     DISPLAYSURF = pygame.display.set_mode(RESOLUTION)
-    
+
     pygame.display.set_caption("Save The World!")
     BASICFONT = pygame.font.Font("freesansbold.ttf",22)
-    
+
     IMAGESDICT = {'title':pygame.image.load('images/title_image.png')}
-    
+
     startScreen()
     game_loop()
     terminate()
 
 def startScreen():
     FIREBALLSCOUNT = 7 # number of fireballs displayed on start screen
-    
+
     fontObj = pygame.font.Font("freesansbold.ttf",60)
     titleText = fontObj.render("Save the World",True,WHITE)
     titleRect = titleText.get_rect()
@@ -223,7 +168,7 @@ def startScreen():
     titleRect.top = topCoord
     titleRect.centerx = RESOLUTION[0]//2
     topCoord+=titleRect.height + 20
-    
+
     displayText = BASICFONT.render("Press any key to continue...",True,WHITE)
     displayTextPos = displayText.get_rect()
     displayTextPos.center = (RESOLUTION[0]//2,topCoord)
@@ -236,18 +181,17 @@ def startScreen():
     while True: #Main loop for the start screen
 
         DISPLAYSURF.fill(BGCOLOR)
-    
+
     # theme music
         for i in range(FIREBALLSCOUNT):
             fireballs[i].move()
-        
+
             if fireballs[i].position_y >= display_height:
                 fireballs[i].update_position()
-        
+
             DISPLAYSURF.blit(fireballs[i].image, (fireballs[i].position_x, fireballs[i].position_y))
         DISPLAYSURF.blit(titleText,titleRect)
         DISPLAYSURF.blit(displayText,displayTextPos)
->>>>>>> 131a25c08e77bef09d0301b2d84a08281a649f0e
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
@@ -257,20 +201,11 @@ def startScreen():
                 pygame.mixer.music.stop()
                 return
         pygame.display.update()
-<<<<<<< HEAD
-        FPSCLOCK.tick()
-
-def terminate():
-    pygame.quit()
-    sys.exit()
-
-=======
         FPSCLOCK.tick(FPS) # for slow effect
-        
+
 def terminate():
     pygame.quit()
     sys.exit()
-    
->>>>>>> 131a25c08e77bef09d0301b2d84a08281a649f0e
+
 if __name__ == '__main__':
     main()
