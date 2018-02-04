@@ -219,7 +219,7 @@ def startScreen():
     FIREBALLSCOUNT = 7 # number of fireballs displayed on start screen
     INSTRUCTIONS  = ["Press ESC to quit at any time","Press SPACE to pause","Press any other key to continue...","Tip : Dodge the meteors to increase score"]
     fontObj = pygame.font.Font("freesansbold.ttf",60)
-    titleText = fontObj.render("Save the World",True,WHITE)
+    titleText = fontObj.render("Save the World",True,(51,105,232))
     titleRect = titleText.get_rect()
 #    titleRect = IMAGESDICT['title'].get_rect()
     topCoord = RESOLUTION[1]//2 - titleRect.height
