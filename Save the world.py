@@ -125,7 +125,7 @@ def game_loop():
     y = display_height - jet.height -50
     xchange = 0
     game_level = 1
-    count = 0
+    #count = 0
     pygame.mixer.music.load('sounds/game.mp3')
     pygame.mixer.music.play(-1,0.0)
     while True:
