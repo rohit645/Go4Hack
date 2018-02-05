@@ -5,18 +5,22 @@
 
 **A game made during [Hack 2.0] conducted at NIT Hamirpur.**
 
-This is an arcade game in which you have to dodge the meteors coming towards you. <br>
+This is an arcade game in which you have to dodge the meteors coming towards you.
+
 Longer you can dodge, more will be the score.
 
 ### Requirements
 This game requires [Python 3] and [Pygame] to run. <br>
+
 Just get the latest version.
 
 ### How to run the game?
 Download the zip of game by clicking on **Clone or download**. <img align="right" src="https://help.github.com/assets/images/help/repository/clone-repo-clone-url-button.png" alt = "Clone or download button"><br>
+
 Extract zip file.
 
 **On Windows** <br>
+
 It's as simple as clicking on "Save the world.py"
 
 ### Screenshots
